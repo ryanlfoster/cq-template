@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0"> 
+	<!-- Test roots -->
+	<filter root="/apps/test"/>
+	<filter root="/etc/designs/test"/>
+</workspaceFilter>

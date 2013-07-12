@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.razorfish.test</groupId>
+        <artifactId>test-pom</artifactId>
+        <relativePath>../test-pom/pom.xml</relativePath>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>${project.parent.groupId}</groupId>
+    <name>Test Content</name>
+    <artifactId>test-content</artifactId>
+    <description>Package containing components, templates, workflows etc and build OSGI bundles. Represents the actual deployable JCR Package for the Test project.</description>
+    <packaging>content-package</packaging>
+
+    <properties>
+        <content.dir>${project.build.directory}/classes/jcr_root</content.dir>
+        <package.version>${project.version}</package.version>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/content/jcr_root</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/.vlt</exclude>
+                    <exclude>**/.vltignore</exclude>
+                    <exclude>**/.svn</exclude>
+                    <exclude>**/.DS_Store</exclude>
+                </excludes>
+            </resource>
+            <!-- add thumbnail to package -->
+            <resource>
+                <directory>src/main/content/META-INF/vault/definition</directory>
+                <targetPath>../vault-work/META-INF/vault/definition</targetPath>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>com.day.jcr.vault</groupId>
+                <artifactId>content-package-maven-plugin</artifactId>
+                <version>0.0.16</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <targetURL>http://${cq.host}:${cq.port}/crx/packmgr/service.jsp</targetURL>
+                    <filterSource>src/main/content/META-INF/vault/filter.xml</filterSource>
+                    <properties>
+                         <acHandling>Overwrite</acHandling>
+                    </properties>
+                    <embeddeds>
+                        <embedded>
+                            <groupId>com.razorfish.test</groupId>
+                            <artifactId>test-core</artifactId>
+                            <target>/apps/test/install</target>
+                        </embedded>
+                    </embeddeds>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.sling</groupId>
+                <artifactId>maven-jspc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.razorfish.test</groupId>
+            <artifactId>test-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
